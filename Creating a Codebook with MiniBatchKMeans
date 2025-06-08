@@ -1,0 +1,8 @@
+def create_codebook(features, num_clusters, batch_size):
+    # Create a MiniBatchKMeans clustering object
+    kmeans = MiniBatchKMeans(n_clusters=num_clusters, batch_size=batch_size, random_state=0)
+
+    # Fit the clustering model to the SIFT features
+    kmeans.fit(features)
+
+    return kmeans
