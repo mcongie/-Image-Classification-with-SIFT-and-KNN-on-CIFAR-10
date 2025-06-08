@@ -1,0 +1,30 @@
+def evaluate_classifier(classifier, test_bovw_features, train_labels,test_labels):
+    # Find nearest neighbors for test data
+    distances, indices = classifier.kneighbors(test_bovw_features)
+
+    # Evaluate the classifier
+    predictions = []
+
+    for neighbors in indices:
+        if len(neighbors) > 0:
+            neighbor_labels = train_labels[neighbors]
+            most_common_label = np.bincount(neighbor_labels).argmax()
+            predictions.append(most_common_label)
+        else:
+            # Handle cases where no neighbors were found
+            predictions.append(-1)
+
+    # Filter out test samples without predictions (-1)
+    filtered_test_labels = []
+    filtered_predictions = []
+
+    for i, prediction in enumerate(predictions):
+        if prediction != -1:
+            filtered_test_labels.append(test_labels[i])
+            filtered_predictions.append(prediction)
+
+    # Calculate accuracy and generate a classification report
+    accuracy = accuracy_score(filtered_test_labels, filtered_predictions)
+    report = classification_report(filtered_test_labels, filtered_predictions)
+
+    return accuracy, report
