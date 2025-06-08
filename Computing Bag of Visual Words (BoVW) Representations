@@ -1,0 +1,21 @@
+def compute_bovw_representation(features, codebook):
+    num_clusters = codebook.n_clusters
+    bovw_representation = []
+
+    for image_features in features:
+        if len(image_features) > 0:
+            # Assign each feature to a cluster
+            cluster_assignments = codebook.predict(image_features)
+
+            # Create a histogram of cluster frequencies
+            histogram = np.bincount(cluster_assignments, minlength=num_clusters)
+
+            # Normalize the histogram
+            histogram = histogram / np.sum(histogram)
+
+            bovw_representation.append(histogram)
+        else:
+            # Handle cases where no features were detected
+            bovw_representation.append(np.zeros(num_clusters))
+
+    return bovw_representation
