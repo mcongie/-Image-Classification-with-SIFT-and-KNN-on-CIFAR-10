@@ -1,0 +1,28 @@
+import numpy as np
+import cv2
+import torch
+import torchvision
+import torchvision.transforms as transforms
+from sklearn.neighbors import NearestNeighbors
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.cluster import MiniBatchKMeans
+
+def load_cifar10():
+    # Transformations to preprocess the images
+    transform = transforms.Compose([
+        transforms.ToTensor(),  # Convert images to PyTorch tensors
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))  # Normalize pixel values
+    ])
+
+    # Download CIFAR-10 dataset and apply transformations
+    trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=100, shuffle=True)
+
+    testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
+    testloader = torch.utils.data.DataLoader(testset, batch_size=100, shuffle=False)
+
+    # Extract labels from the dataset
+    train_labels = np.array(trainset.targets)
+    test_labels = np.array(testset.targets)
+
+    return train_labels, test_labels, trainset, testset
