@@ -1,0 +1,23 @@
+def main():
+    train_labels, test_labels, trainset, testset = load_cifar10()
+    train_sift_features = extract_sift_features(trainset.data)
+    test_sift_features = extract_sift_features(testset.data)
+
+    num_clusters = 100  # Number of clusters for codebook
+    batch_size = 1000   # Batch size for MiniBatchKMeans
+
+    concatenated_train_sift_features = np.vstack(train_sift_features)
+    codebook = create_codebook(concatenated_train_sift_features, num_clusters, batch_size)
+
+    train_bovw_features = compute_bovw_representation(train_sift_features, codebook)
+    test_bovw_features = compute_bovw_representation(test_sift_features, codebook)
+
+    knn_classifier = train_knn_classifier(train_bovw_features, train_labels)
+
+    accuracy, report = evaluate_classifier(knn_classifier, test_bovw_features, train_labels,test_labels)
+
+    print("Accuracy:", accuracy)
+    print("Classification Report:\n", report)
+
+if __name__ == "__main__":
+    main()
