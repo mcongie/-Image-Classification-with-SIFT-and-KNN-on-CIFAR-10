@@ -1,0 +1,16 @@
+def extract_sift_features(images):
+    # Initialize the SIFT detector
+    sift = cv2.SIFT_create()
+    sift_features = []
+
+    for image in images:
+        # Convert the image to grayscale
+        gray_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
+
+        # Detect keypoints and compute SIFT descriptors
+        kp, descriptors = sift.detectAndCompute(gray_image, None)
+
+        if descriptors is not None:
+            sift_features.append(descriptors)
+
+    return sift_features
